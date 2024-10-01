@@ -1,0 +1,85 @@
+import { expect } from '@playwright/test';
+
+export class HrDashboardPage {
+  page: any;
+    countryInput: string;
+    employeeFilterCheckbox: string;
+    currencyInput: string;
+    employmentInput: string;
+    saveButton: string;
+    contractorFilterCheckbox: string;
+    tableBody: string;
+    Toast: string;
+  constructor(page: any) {
+    this.page = page;
+    this.countryInput = 'select[data-test-id="country-input"]';
+    this.currencyInput = 'select[data-test-id="currency-input"]';
+    this.employmentInput = 'select[data-test-id="employment-input"]';
+    this.saveButton = '[data-testid="modal-save-button"]';
+    this.employeeFilterCheckbox = 'input[data-testid="employee-filter"]';
+    this.contractorFilterCheckbox = 'input[data-testid="contractor-filter"]';
+    this.tableBody = 'table tbody';
+    this.Toast = 'div[role="status"]';
+  }
+
+  // Method to create a new team member
+  async createMember(name: string | RegExp | readonly (string | RegExp)[], jobTitle: any, country: any, currency: any, salary: any, employmentType: any) {
+    const addButton = await this.page.getByRole('button', { name: 'Add member' });
+    // Ensure the button is visible before clicking
+    await expect(addButton).toBeVisible();
+    await addButton.click();
+    // Fill in the form details
+    await this.page.getByRole('textbox', { name: 'Name' }).fill(name);
+    await this.page.getByRole('textbox', { name: 'Job title' }).fill(jobTitle);
+    await this.page.selectOption(this.countryInput, { label: country });
+    await this.page.selectOption(this.currencyInput, { label: currency });
+    await this.page.getByRole('textbox', { name: 'Salary' }).fill(salary);
+    await this.page.selectOption(this.employmentInput, { label: employmentType });
+    await this.page.click(this.saveButton);
+    await this.page.waitForSelector(this.tableBody);
+    await expect(this.page.locator(this.Toast)).toContainText("You’ve successfully added a member.")
+    await expect(this.page.locator(this.tableBody)).toContainText(name);
+  }
+
+  // Method to search for a member by name
+  async searchMemberByName(name: string | RegExp | readonly (string | RegExp)[]) {
+    const searchbox = await this.page.getByRole('searchbox', { name: 'Search people...' });
+    await expect(searchbox).toBeVisible();
+    await searchbox.fill(name);
+    await this.page.waitForSelector(this.tableBody);
+    await expect(this.page.locator(this.tableBody)).toContainText(name);
+  }
+
+  // Method to edit a member's details
+  async editMember(oldName: any, newName: any, newJobTitle: string | RegExp | readonly (string | RegExp)[]) {
+    await this.page.click('[data-testid="edit-person"]');
+    await this.page.getByRole('textbox', { name: 'Name' }).fill(newName);
+    await this.page.getByRole('textbox', { name: 'Job title' }).fill(newJobTitle);
+    await this.page.click(this.saveButton);
+    await expect(this.page.locator(this.Toast)).toContainText("You’ve successfully edited a member.")
+    await this.page.reload();
+    const updatedRow = this.page.locator(`${this.tableBody} tr`).filter({ hasText: newName });
+    await expect(updatedRow.locator('td').nth(1)).toHaveText(newJobTitle);
+  }
+
+  // Method to filter by employee type
+  async filterByEmployeeType() {
+    await this.page.check(this.employeeFilterCheckbox);
+  }
+
+  // Method to filter by contractor type
+  async filterByContractorType() {
+    await this.page.uncheck(this.employeeFilterCheckbox);
+    await this.page.check(this.contractorFilterCheckbox);
+  }
+
+  // Assert if a member is present in the list
+  async assertMemberIsPresent(name: string | RegExp | readonly (string | RegExp)[]) {
+    await expect(this.page.locator(this.tableBody)).toContainText(name);
+  }
+
+  // Assert if a member is NOT present in the list
+  async assertMemberIsNotPresent(name: string | RegExp | readonly (string | RegExp)[]) {
+    await expect(this.page.locator(this.tableBody)).not.toContainText(name);
+  }
+}

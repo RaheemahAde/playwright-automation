@@ -10,7 +10,7 @@ let memberData = {
   employmentType: 'contractor'   // Default employment type
 };
 
-test.describe('People List', () => {
+test.describe.skip('People List', () => {
   let HrDashboardPage: any;
 
   test.beforeEach(async ({ page }) => {

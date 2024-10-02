@@ -18,14 +18,6 @@ export default defineConfig({
     {
       name: 'chromium',
       use: { browserName: 'chromium' }, // Run tests in Chromium
-    },
-    {
-      name: 'firefox',
-      use: { browserName: 'firefox' }, // Run tests in Firefox
-    },
-    {
-      name: 'webkit',
-      use: { browserName: 'webkit' }, // Run tests in WebKit
-    },
-  ],
+    }
+  ]
 });

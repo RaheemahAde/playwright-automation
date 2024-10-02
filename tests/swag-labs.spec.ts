@@ -1,19 +1,16 @@
 import { test, expect, Page } from '@playwright/test';
-import {
-  addToCartByProductName,
-  removeItemFromCart,
-} from '../helpers/cartHelpers';
-import { addCheckoutInfo } from '../helpers/checkoutHelper';
-import { login } from '../helpers/loginHelper';
-import * as constants from '../config/constants';
+import { addToCartByProductName, removeItemFromCart } from '../utils/cart';
+import { addCheckoutInfo } from '../utils/checkout';
+import { login } from '../utils/login';
+import { userInfo, products } from '../constants/appConstants';
 
 test.describe('Swag Labs - Cart and Checkout Functionality', () => {
   test.beforeEach('should login', async ({ page }) => {
     await login(page);
   });
   test('should add items to cart and checkout', async ({ page }) => {
-    await addToCartByProductName(page, constants.product1);
-    await addToCartByProductName(page, constants.product2);
+    await addToCartByProductName(page, products.product1);
+    await addToCartByProductName(page, products.product2);
 
     await page.getByTestId('shopping-cart-link').click();
 
@@ -23,7 +20,7 @@ test.describe('Swag Labs - Cart and Checkout Functionality', () => {
 
     for (let i = 0; i < itemCount; i++) {
       const itemText = await cartItems.nth(i).textContent();
-      expect(itemText).not.toContain(constants.excludedItem);
+      expect(itemText).not.toContain(products.excludedItem);
     }
 
     const backpackItem = cartItems.filter({ hasText: 'Sauce Labs Backpack' });
@@ -34,7 +31,7 @@ test.describe('Swag Labs - Cart and Checkout Functionality', () => {
     await expect(backpackItem).toHaveCount(1);
     await expect(bikeLightItem).toHaveCount(1);
 
-    await removeItemFromCart(page, constants.backPackId);
+    await removeItemFromCart(page, products.backPackId);
 
     await expect(backpackItem).not.toBeAttached();
     await expect(bikeLightItem).toBeVisible();
@@ -48,9 +45,9 @@ test.describe('Swag Labs - Cart and Checkout Functionality', () => {
 
     await addCheckoutInfo(
       page,
-      constants.firstName,
-      constants.lastName,
-      constants.postcode
+      userInfo.firstName,
+      userInfo.lastName,
+      userInfo.postcode
     );
     await page.getByTestId('continue').click();
 

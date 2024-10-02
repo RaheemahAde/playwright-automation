@@ -1,18 +1,17 @@
-import { test, expect } from '@playwright/test';
-
-
+import { test, expect, Page } from '@playwright/test';
 
 test.describe('Swag Labs - Cart and Checkout Functionality', () => {
   test.beforeEach(async ({ page }) => {
     const url = 'https://www.saucedemo.com/';
     const expectedPageTitle = 'Swag Labs';
-      
+
     await page.goto(url);
     await expect(page).toHaveTitle(expectedPageTitle);
-    });
-  test('should login, add items to cart, checkout and make payment', async ({ page }) => {
+  });
+  test('should login, add items to cart, checkout and make payment', async ({
+    page,
+  }) => {
     const url = 'https://www.saucedemo.com/inventory.html';
-    const expectedTitle = 'Products';
 
     await page.getByPlaceholder('Username').fill('standard_user');
     await page.getByPlaceholder('Password').fill('secret_sauce');
@@ -21,11 +20,10 @@ test.describe('Swag Labs - Cart and Checkout Functionality', () => {
     await expect(page).toHaveURL(url);
     await page.pause();
 
-    async function addToCartByProductName(
-      page: { locator: (arg0: string, arg1: { hasText: string }) => any },
-      productName: string
-    ) {
-      const product = page.locator('[data-test="inventory-item"]', { hasText: productName });
+    async function addToCartByProductName(page: Page, productName: string) {
+      const product = page.locator('[data-test="inventory-item"]', {
+        hasText: productName,
+      });
       await product.getByRole('button', { name: 'Add to cart' }).click();
     }
 
@@ -46,7 +44,9 @@ test.describe('Swag Labs - Cart and Checkout Functionality', () => {
     }
 
     const backpackItem = cartItems.filter({ hasText: 'Sauce Labs Backpack' });
-    const bikeLightItem = cartItems.filter({ hasText: 'Sauce Labs Bike Light' });
+    const bikeLightItem = cartItems.filter({
+      hasText: 'Sauce Labs Bike Light',
+    });
 
     await expect(backpackItem).toHaveCount(1);
     await expect(bikeLightItem).toHaveCount(1);

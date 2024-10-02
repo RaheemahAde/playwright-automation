@@ -1,13 +1,13 @@
-import { test, expect, Page } from '@playwright/test';
+import { test, expect } from '@playwright/test';
 
 let memberId: any;
 let memberData = {
-  name: 'Jack Hunter',           // Default member name 
-  jobTitle: 'QA Engineer',       // Default job title
-  country: 'Germany',            // Default country
-  currency: 'GBP',               // Default currency
-  salary: '7500',                // Default salary
-  employmentType: 'contractor'   // Default employment type
+  name: 'Jack Hunter', // Default member name
+  jobTitle: 'QA Engineer', // Default job title
+  country: 'Germany', // Default country
+  currency: 'GBP', // Default currency
+  salary: '7500', // Default salary
+  employmentType: 'contractor', // Default employment type
 };
 
 test.describe.skip('People List', () => {
@@ -16,11 +16,13 @@ test.describe.skip('People List', () => {
   test.beforeEach(async ({ page }) => {
     HrDashboardPage = new HrDashboardPage(page);
     await page.goto('http://localhost:3002/people');
-    await expect(page.getByRole('heading', { name: 'People' })).toHaveText('People');
+    await expect(page.getByRole('heading', { name: 'People' })).toHaveText(
+      'People'
+    );
   });
 
   // Test 1: Create a new member with dynamic data
-  test('should create a new member', async ({ page, request }) => {
+  test('should create a new member', async ({ request }) => {
     await HrDashboardPage.createMember(
       memberData.name,
       memberData.jobTitle,
@@ -45,7 +47,7 @@ test.describe.skip('People List', () => {
     const updatedName = `${memberData.name} -edited`;
     const newJobTitle = 'Senior QA Engineer';
     await HrDashboardPage.editMember(memberData.name, updatedName, newJobTitle);
-    
+
     // Update memberData to reflect the edited name and job title for subsequent tests
     memberData.name = updatedName;
     memberData.jobTitle = newJobTitle;
@@ -54,7 +56,7 @@ test.describe.skip('People List', () => {
   // Test 3: Filter member by Employee type
   test('should filter members by Employee type', async () => {
     await HrDashboardPage.filterByEmployeeType();
-    await HrDashboardPage.assertMemberIsNotPresent(memberData.name);  // Member is a contractor, should not appear in the employee list
+    await HrDashboardPage.assertMemberIsNotPresent(memberData.name); // Member is a contractor, should not appear in the employee list
   });
 
   // Test 4: Filter member by Contractor type
@@ -66,7 +68,9 @@ test.describe.skip('People List', () => {
   // Clean up: Delete the member after all tests
   test.afterAll(async ({ request }) => {
     if (memberId) {
-      const response = await request.delete(`http://localhost:4002/people/${memberId}`);
+      const response = await request.delete(
+        `http://localhost:4002/people/${memberId}`
+      );
       expect(response.ok()).toBeTruthy();
     }
   });

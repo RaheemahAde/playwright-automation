@@ -1,44 +1,38 @@
-import { test, expect, Page } from '@playwright/test';
+import { test, expect } from '@playwright/test';
+import {
+  addToCartByProductName,
+  removeItemFromCart,
+} from '../helpers/cartHelpers';
+import { completeCheckout } from '../helpers/checkoutHelpers';
+import * as constants from '../config/constants';
+
+let itemTotal;
+let taxValue;
+let priceTotal;
 
 test.describe('Swag Labs - Cart and Checkout Functionality', () => {
-  test.beforeEach(async ({ page }) => {
-    const url = 'https://www.saucedemo.com/';
-    const expectedPageTitle = 'Swag Labs';
+  test.beforeEach('should login', async ({ page }) => {
+    await page.goto(constants.url);
+    await expect(page).toHaveTitle(constants.expectedPageTitle);
 
-    await page.goto(url);
-    await expect(page).toHaveTitle(expectedPageTitle);
-  });
-  test('should login, add items to cart, checkout and make payment', async ({
-    page,
-  }) => {
-    const url = 'https://www.saucedemo.com/inventory.html';
-
-    await page.getByPlaceholder('Username').fill('standard_user');
-    await page.getByPlaceholder('Password').fill('secret_sauce');
+    await page.getByPlaceholder('Username').fill(constants.username);
+    await page.getByPlaceholder('Password').fill(constants.password);
     await page.getByText('Login').click();
-
-    await expect(page).toHaveURL(url);
-
-    async function addToCartByProductName(page: Page, productName: string) {
-      const product = page.locator('[data-test="inventory-item"]', {
-        hasText: productName,
-      });
-      await product.getByRole('button', { name: 'Add to cart' }).click();
-    }
-
-    await addToCartByProductName(page, 'Sauce Labs Backpack');
-    await addToCartByProductName(page, 'Sauce Labs Bike Light');
+    await expect(page).toHaveURL(constants.productUrl);
+  });
+  test('add items to cart, checkout and make payment', async ({ page }) => {
+    await addToCartByProductName(page, constants.product1);
+    await addToCartByProductName(page, constants.product2);
 
     await page.getByTestId('shopping-cart-link').click();
 
     const cartItems = page.locator('[data-test="inventory-item-name"]');
-    const excludedItem = 'Test.allTheThings() T-Shirt (Red)';
 
     const itemCount = await cartItems.count();
 
     for (let i = 0; i < itemCount; i++) {
       const itemText = await cartItems.nth(i).textContent();
-      expect(itemText).not.toContain(excludedItem);
+      expect(itemText).not.toContain(constants.excludedItem);
     }
 
     const backpackItem = cartItems.filter({ hasText: 'Sauce Labs Backpack' });
@@ -49,8 +43,7 @@ test.describe('Swag Labs - Cart and Checkout Functionality', () => {
     await expect(backpackItem).toHaveCount(1);
     await expect(bikeLightItem).toHaveCount(1);
 
-    const removeItem = page.getByTestId('remove-sauce-labs-backpack');
-    await removeItem.click();
+    await removeItemFromCart(page, constants.backPackId);
 
     await expect(backpackItem).not.toBeVisible();
     await expect(bikeLightItem).toBeVisible();
@@ -60,14 +53,15 @@ test.describe('Swag Labs - Cart and Checkout Functionality', () => {
     const checkoutPageTitle = page.getByText('Checkout: Your Information');
     await expect(checkoutPageTitle).toBeVisible();
 
-    await page.getByPlaceholder('First Name').fill('Rose');
-    await page.getByPlaceholder('Last Name').fill('May');
-    await page.getByPlaceholder('Zip/Postal Code').fill('TA1 1JH');
+    await completeCheckout(
+      page,
+      constants.firstName,
+      constants.lastName,
+      constants.postcode
+    );
     await page.getByTestId('continue').click();
     //await expect(page).to
-    let itemTotal;
-    let taxValue;
-    let priceTotal;
+
     // Locate the item price
     const itemTotalText = await page
       .getByTestId('subtotal-label')

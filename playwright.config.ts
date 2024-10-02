@@ -6,14 +6,10 @@ export default defineConfig({
   expect: {
     timeout: 5000, // Timeout for assertions (e.g., expect)
   },
-  retries: 2, // Number of retries for failed tests
-  use: {
-    headless: true, // Run tests in headless mode
-    viewport: { width: 1280, height: 720 }, // Default browser viewport size
-    actionTimeout: 0, // No limit for actions like page.click
-    ignoreHTTPSErrors: true, // Ignore HTTPS errors
-    video: 'on-first-retry', // Record video only on first retry of a test
-  },
+    use: {
+//    storageState: 'storage-state.json'
+     headless: true, // Run tests in headless mode
+},
   projects: [
     {
       name: 'chromium',

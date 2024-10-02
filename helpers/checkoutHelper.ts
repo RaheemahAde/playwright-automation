@@ -1,6 +1,6 @@
 import { Page } from '@playwright/test';
 
-export async function completeCheckout(
+export async function addCheckoutInfo(
   page: Page,
   firstName: string,
   lastName: string,

@@ -2,12 +2,13 @@ import { defineConfig } from '@playwright/test';
 
 export default defineConfig({
   testDir: './tests', // Path to the directory where tests are located
-  timeout: 30000, // Maximum time one test can run (30 seconds)
+  timeout: 5000, // Maximum time one test can run (30 seconds)
   expect: {
     timeout: 5000, // Timeout for assertions (e.g., expect)
   },
   use: {
     //    storageState: 'storage-state.json'
+    testIdAttribute: 'data-test',
     headless: true, // Run tests in headless mode
   },
   projects: [

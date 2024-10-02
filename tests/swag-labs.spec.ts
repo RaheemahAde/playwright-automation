@@ -18,7 +18,6 @@ test.describe('Swag Labs - Cart and Checkout Functionality', () => {
     await page.getByText('Login').click();
 
     await expect(page).toHaveURL(url);
-    await page.pause();
 
     async function addToCartByProductName(page: Page, productName: string) {
       const product = page.locator('[data-test="inventory-item"]', {
@@ -30,12 +29,11 @@ test.describe('Swag Labs - Cart and Checkout Functionality', () => {
     await addToCartByProductName(page, 'Sauce Labs Backpack');
     await addToCartByProductName(page, 'Sauce Labs Bike Light');
 
-    await page.locator('[data-test="shopping-cart-link"]').click();
+    await page.getByTestId('shopping-cart-link').click();
 
     const cartItems = page.locator('[data-test="inventory-item-name"]');
     const excludedItem = 'Test.allTheThings() T-Shirt (Red)';
 
-    // Get the count of items and print each item's text
     const itemCount = await cartItems.count();
 
     for (let i = 0; i < itemCount; i++) {
@@ -51,16 +49,56 @@ test.describe('Swag Labs - Cart and Checkout Functionality', () => {
     await expect(backpackItem).toHaveCount(1);
     await expect(bikeLightItem).toHaveCount(1);
 
-    const removeItem = page.locator('[data-test="remove-sauce-labs-backpack"]');
+    const removeItem = page.getByTestId('remove-sauce-labs-backpack');
     await removeItem.click();
 
     await expect(backpackItem).not.toBeVisible();
     await expect(bikeLightItem).toBeVisible();
 
     await page.getByRole('button', { name: 'Checkout' }).click();
-    await page.pause();
 
     const checkoutPageTitle = page.getByText('Checkout: Your Information');
     await expect(checkoutPageTitle).toBeVisible();
+
+    await page.getByPlaceholder('First Name').fill('Rose');
+    await page.getByPlaceholder('Last Name').fill('May');
+    await page.getByPlaceholder('Zip/Postal Code').fill('TA1 1JH');
+    await page.getByTestId('continue').click();
+    //await expect(page).to
+    let itemTotal;
+    let taxValue;
+    let priceTotal;
+    // Locate the item price
+    const itemTotalText = await page
+      .getByTestId('subtotal-label')
+      .textContent();
+
+    if (itemTotalText) {
+      itemTotal = parseFloat(itemTotalText.replace(/[^\d.]/g, '').trim());
+    } else {
+      throw new Error('Price not found!');
+    }
+
+    // Locate the tax value
+    const taxText = await page.getByTestId('tax-label').textContent();
+    if (taxText) {
+      taxValue = parseFloat(taxText.replace(/[^\d.]/g, '').trim());
+    } else {
+      throw new Error('Tax Value not found!');
+    }
+    // Locate the price total
+    const totalText = await page.getByTestId('total-label').textContent();
+    if (totalText) {
+      priceTotal = parseFloat(totalText.replace(/[^\d.]/g, '').trim());
+    } else {
+      throw new Error('Price Total not found');
+    }
+
+    const expectedTotal = (itemTotal ?? 0) + (taxValue ?? 0);
+    // Round both totals to 2 decimal places
+    const roundedExpectedTotal = Math.round(expectedTotal * 100) / 100;
+    const roundedPriceTotal = Math.round((priceTotal ?? 0) * 100) / 100;
+
+    expect(roundedExpectedTotal).toEqual(roundedPriceTotal);
   });
 });

@@ -6,16 +6,15 @@ export default defineConfig({
   expect: {
     timeout: 5000, // Timeout for assertions (e.g., expect)
   },
-  reporter: [['html']],
+  //reporter: [['html']],
   use: {
-    //    storageState: 'storage-state.json'
     testIdAttribute: 'data-test',
     headless: true, // Run tests in headless mode
   },
   projects: [
     {
       name: 'chromium',
-      use: { browserName: 'chromium' }, // Run tests in Chromium
+      use: { browserName: 'chromium'},
     },
   ],
 });

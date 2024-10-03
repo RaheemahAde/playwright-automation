@@ -1,5 +1,4 @@
 import { expect, Page } from '@playwright/test';
-//import * as constants from '../config/constants';
 import { urls, userInfo, pageTitles } from '../constants/appConstants';
 
 export async function login(page: Page) {
@@ -10,4 +9,5 @@ export async function login(page: Page) {
   await page.getByPlaceholder('Password').fill(userInfo.password);
   await page.getByText('Login').click();
   await expect(page).toHaveURL(urls.productUrl);
-}
+  console.log("Login process completed");  // Debugging log
+  } 

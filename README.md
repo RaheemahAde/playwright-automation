@@ -12,5 +12,5 @@ Follow these steps to set up and run the tests:
 ## Running Tests
 
 - Run tests in headless mode: **`npm test`**
-- Run tests in UI mode: **`npm test:ui`**
-- Show test reports: **`npm test:report`**
+- Run tests in UI mode: **`npm run test:ui`**
+- Show test reports: **`npm run test:report`**

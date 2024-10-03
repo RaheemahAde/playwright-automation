@@ -4,7 +4,6 @@ import { addCheckoutInfo } from '../utils/checkout';
 import { login } from '../utils/login';
 import { userInfo, products } from '../constants/appConstants';
 
-// Test suite for Swag Labs Cart and Checkout functionality
 test.describe('Swag Labs - Cart and Checkout Functionality', () => {
   
   // Hook to log in before each test

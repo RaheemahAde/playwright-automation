@@ -13,7 +13,7 @@ test.describe('Swag Labs - Cart and Checkout Functionality', () => {
   });
 
   // Test to add items to the cart and proceed with the checkout
-  test('should add items to cart and checkout', async ({ page }) => {
+  test('should add items to cart and complete checkout', async ({ page }) => {
     
     // Add two specific products to the cart
     await addToCartByProductName(page, products.product1);
@@ -111,8 +111,12 @@ test.describe('Swag Labs - Cart and Checkout Functionality', () => {
   });
 
   // Hook to log out after each test
-  test.afterEach(async ({ page }) => {
+  test.afterEach('should ensure user is logged out after test', async ({ page }) => {
     await page.getByRole('button', { name: 'Open Menu' }).click(); // Open the menu
     await page.getByRole('link', { name: 'Logout' }).click(); // Click the logout link
+
+  // Check for the presence of the login button
+    const loginButton = page.getByRole('button', { name: 'Login' });
+    await expect(loginButton).toBeVisible();
   });
 });

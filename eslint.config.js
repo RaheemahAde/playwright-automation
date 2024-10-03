@@ -1,37 +1,35 @@
-// Import the necessary packages
-const { FlatCompat } = require('@eslint/eslintrc');
-const js = require('@eslint/js');
-const typescriptParser = require('@typescript-eslint/parser');
-const typescriptEslintPlugin = require('@typescript-eslint/eslint-plugin');
-const prettierPlugin = require('eslint-plugin-prettier');
-const playwrightPlugin = require('eslint-plugin-playwright');
+import { FlatCompat } from '@eslint/eslintrc';
+import js from '@eslint/js';
+import typescriptParser from '@typescript-eslint/parser'; // Import TypeScript parser
+import typescriptEslintPlugin from '@typescript-eslint/eslint-plugin';
+import prettierPlugin from 'eslint-plugin-prettier';
+import playwrightPlugin from 'eslint-plugin-playwright';
 
-// Set up FlatCompat to handle older configs
+// eslint-disable-next-line no-unused-vars
 const compat = new FlatCompat({
-  baseDirectory: __dirname, // Ensures paths are resolved correctly
+  baseDirectory: import.meta.url, // Ensure this is set correctly for resolving paths
 });
 
-module.exports = [
-  js.configs.recommended, // Use the recommended JavaScript configuration from ESLint
+export default [
+  js.configs.recommended,
   {
-    ignores: ['node_modules/**', 'dist/**', 'build/**'], // Ignore unnecessary directories
+    ignores: ['node_modules/**', 'dist/**', 'build/**'],
   },
   {
-    // Target TypeScript files for linting
-    files: ['**/*.ts', '**/*.tsx'],
+    files: ['**/*.ts', '**/*.tsx'], // Add .tsx if using React with TypeScript
     languageOptions: {
-      parser: typescriptParser, // Use TypeScript parser
-      sourceType: 'module', // Treat code as modules
-      ecmaVersion: 'latest', // Support the latest ECMAScript version
+      parser: typescriptParser,
+      sourceType: 'module',
+      ecmaVersion: 'latest',
     },
     plugins: {
-      '@typescript-eslint': typescriptEslintPlugin, // TypeScript linting rules
-      prettier: prettierPlugin, // Prettier integration
-      playwright: playwrightPlugin, // Playwright-specific linting rules
+      '@typescript-eslint': typescriptEslintPlugin,
+      prettier: prettierPlugin,
+      playwright: playwrightPlugin,
     },
     rules: {
-      'prettier/prettier': 'error', // Enforce Prettier formatting
-      '@typescript-eslint/no-unused-vars': 'warn', // Warn about unused variables
+      'prettier/prettier': 'error',
+      '@typescript-eslint/no-unused-vars': 'warn',
     },
   },
 ];

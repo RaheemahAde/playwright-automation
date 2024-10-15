@@ -16,8 +16,8 @@ test.describe('Swag Labs - Cart and Checkout Functionality', () => {
 
   // Test to add items to the cart
   test('should add items to cart', async () => {
-    await addToCartByProductName(page, products.product1);
-    await addToCartByProductName(page, products.product2);
+    await addToCartByProductName(page, products.backpack);
+    await addToCartByProductName(page, products.bikeLight);
 
     // Navigate to the cart page
     await page.getByTestId('shopping-cart-link').click();

@@ -12,6 +12,7 @@ const pageTitles = {
 // User Information
 const userInfo = {
   username: 'standard_user',
+  lockedOutUsername: 'locked_out_user',
   password: 'secret_sauce',
   firstName: 'Rose',
   lastName: 'May',
@@ -20,11 +21,16 @@ const userInfo = {
 
 // Product Information
 const products = {
-  product1: 'Sauce Labs Backpack',
-  product2: 'Sauce Labs Bike Light',
+  backpack: 'Sauce Labs Backpack',
+  bikeLight: 'Sauce Labs Bike Light',
   excludedItem: 'Test.allTheThings() T-Shirt (Red)',
   backPackId: 'remove-sauce-labs-backpack',
 };
 
+// Message Information
+const messages = {
+  errorMessage: 'Epic sadface: Sorry, this user has been locked out.'
+}
+
 // Export all grouped constants
-export { urls, pageTitles, userInfo, products };
+export { urls, pageTitles, userInfo, products, messages };

@@ -9,5 +9,5 @@ export async function login(page: Page) {
   await page.getByPlaceholder('Password').fill(userInfo.password);
   await page.getByText('Login').click();
   await expect(page).toHaveURL(urls.productUrl);
-  console.log("Login process completed");  // Debugging log
+  await expect(page).toHaveScreenshot()
   } 

@@ -1,8 +1,8 @@
 import { Page } from '@playwright/test';
 
 export async function addToCartByProductName(page: Page, productName: string) {
-  const product = page.locator('[data-test="inventory-item"]', {
-    hasText: productName,
+  const product = page.locator('[data-test="inventory-item"]').filter({
+    hasText: productName
   });
   await product.getByRole('button', { name: 'Add to cart' }).click();
 }

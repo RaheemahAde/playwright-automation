@@ -3,7 +3,7 @@ import { addToCartByProductName, removeItemFromCart } from '../utils/cart';
 import { addCheckoutInfo } from '../utils/checkout';
 import { login } from '../utils/login';
 import { userInfo, products } from '../constants/appConstants';
-//test
+
 test.describe('Swag Labs - Cart and Checkout Functionality', () => {
   let page: Page;
 
